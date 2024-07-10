@@ -86,7 +86,7 @@ class GradientTextWidget extends StatelessWidget {
         AppColors.paleSlate,
       ],
       style: TextStyle(
-          fontSize: size.width * 0.040,
+          fontSize: size.width * 0.030,
           fontFamily: 'Poppins',
           fontWeight: FontWeight.bold),
     );

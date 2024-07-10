@@ -9,6 +9,7 @@ import 'package:portfolio/widgets/myservice_widgets.dart';
 import 'package:portfolio/widgets/navbar/navitems.dart';
 import 'package:portfolio/widgets/rotating_image_continer.dart';
 import 'package:portfolio/widgets/social_widgets.dart';
+import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class TabletLayout extends StatefulWidget {
   const TabletLayout({super.key});
@@ -238,10 +239,45 @@ class _TabletLayoutState extends State<TabletLayout> {
                     ],
                   ),
                 ),
-                Container(
-                  color: Colors.black,
+                SizedBox(height: size.height * 0.15),
+                AnimatedContainer(
                   key: _servicesKey,
-                  child: MyServicesWidget(size: size),
+                  duration: Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                  color: _calculateContainerColor(size),
+                  padding: EdgeInsets.symmetric(vertical: size.width * 0.07),
+                  child: Column(
+                    children: [
+                      GradientText(
+                        "My Quality Services",
+                        colors: [AppColors.studio, AppColors.paleSlate],
+                        style: TextStyle(
+                          fontSize: size.width * 0.030,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: size.height * 0.02),
+                      Opacity(
+                        opacity: _calculateOpacity(0.3, 0.7),
+                        child: Transform.translate(
+                          offset: Offset(0.0, _calculateOffset(-50, 50)),
+                          child: Text(
+                            'We put your ideas and thus your wishes in the form of a unique web project that inspires you and your customers.',
+                            style: TextStyle(
+                              fontSize: size.width * 0.012,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: size.height * 0.05),
+                      MyServicesWidget(size: size),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -249,6 +285,25 @@ class _TabletLayoutState extends State<TabletLayout> {
         ),
       ),
     );
+  }
+
+  double _calculateOpacity(double startOpacity, double endOpacity) {
+    double normalizedScroll = _scrollPosition / 300.0; // Adjust as needed
+    return 1.0 - (normalizedScroll.clamp(0.0, 1.0) * (1.0 - startOpacity));
+  }
+
+  double _calculateOffset(double startOffset, double endOffset) {
+    double normalizedScroll = _scrollPosition / 300.0; // Adjust as needed
+    return (1.0 - normalizedScroll.clamp(0.0, 1.0)) * (endOffset - startOffset);
+  }
+
+  Color _calculateContainerColor(size) {
+    if (_scrollPosition > size.height * 0.5) {
+      // Change color when scroll position reaches a certain point (adjust 0.5 as needed)
+      return AppColors.ebony;
+    } else {
+      return Colors.transparent;
+    }
   }
 }
 

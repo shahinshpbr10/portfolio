@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:portfolio/core/common/colors.dart';
 import 'package:portfolio/core/common/styles.dart';
 import 'package:portfolio/widgets/count_container_widget.dart';
+import 'package:portfolio/widgets/custom_tab_bar.dart';
 import 'package:portfolio/widgets/header_text_widget.dart';
 import 'package:portfolio/widgets/myservice_widgets.dart';
 import 'package:portfolio/widgets/navbar/navitems.dart';
+import 'package:portfolio/widgets/resume_card.dart';
+import 'package:portfolio/widgets/resume_header.dart';
 import 'package:portfolio/widgets/rotating_image_continer.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
@@ -17,15 +20,20 @@ class DesktopLayout extends StatefulWidget {
   State<DesktopLayout> createState() => _DesktopLayoutState();
 }
 
-class _DesktopLayoutState extends State<DesktopLayout> {
+class _DesktopLayoutState extends State<DesktopLayout>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   ScrollController _scrollController = ScrollController();
   double _scrollPosition = 0.0;
   bool isHovered = false;
   final GlobalKey _servicesKey = GlobalKey();
+  final GlobalKey _resumeKey = GlobalKey();
+  final GlobalKey _worksKey = GlobalKey(); // Add this line
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 4, vsync: this);
     _scrollController.addListener(_scrollListener);
   }
 
@@ -33,6 +41,7 @@ class _DesktopLayoutState extends State<DesktopLayout> {
   void dispose() {
     _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -45,6 +54,22 @@ class _DesktopLayoutState extends State<DesktopLayout> {
   void _scrollToServices() {
     Scrollable.ensureVisible(
       _servicesKey.currentContext!,
+      duration: Duration(seconds: 1),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _scrollToWorks() {
+    Scrollable.ensureVisible(
+      _worksKey.currentContext!,
+      duration: Duration(seconds: 1),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _scrollToResume() {
+    Scrollable.ensureVisible(
+      _resumeKey.currentContext!,
       duration: Duration(seconds: 1),
       curve: Curves.easeInOut,
     );
@@ -64,6 +89,7 @@ class _DesktopLayoutState extends State<DesktopLayout> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              //Heading Nav bar
               Container(
                 margin: EdgeInsets.only(
                     left: size.width * 0.05,
@@ -84,8 +110,14 @@ class _DesktopLayoutState extends State<DesktopLayout> {
                           title: 'Services',
                           ontap: _scrollToServices,
                         ),
-                        NavItem(title: 'Works'),
-                        NavItem(title: 'Resume'),
+                        NavItem(
+                          title: 'Works',
+                          ontap: _scrollToWorks,
+                        ), // Update this line
+                        NavItem(
+                          title: 'Resume',
+                          ontap: _scrollToResume,
+                        ),
                         NavItem(title: 'Skills'),
                         NavItem(title: 'Contact'),
                         Container(
@@ -129,7 +161,7 @@ class _DesktopLayoutState extends State<DesktopLayout> {
                               ),
                             ),
                           ),
-                        )
+                        ) //Heading Nav bar End
                       ],
                     ),
                   ],
@@ -192,6 +224,9 @@ class _DesktopLayoutState extends State<DesktopLayout> {
                   ],
                 ),
               ),
+              //Welcome end
+
+              //services Start
               SizedBox(height: size.height * 0.17),
               AnimatedContainer(
                 key: _servicesKey,
@@ -231,7 +266,55 @@ class _DesktopLayoutState extends State<DesktopLayout> {
                     MyServicesWidget(size: size),
                   ],
                 ),
-              ),
+              ), //Services End
+              //Work Start
+              Container(
+                key: _worksKey, // Add this line
+                child: Column(
+                  children: [
+                    Container(
+                      width: size.width,
+                      padding:
+                          EdgeInsets.symmetric(vertical: size.width * 0.05),
+                      child: Column(
+                        children: [
+                          GradientTextWidget(
+                            size: size,
+                            text1: "My Recent Works",
+                          ),
+                          SizedBox(
+                            height: size.height * 0.01,
+                          ),
+                          CustomTabBar(tabController: _tabController)
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: size.width * 0.05),
+                      height: size.height,
+                      child: CustomeTabBarView(
+                          tabController: _tabController, size: size),
+                    )
+                  ],
+                ),
+              ), //Work End
+              SizedBox(height: size.height * 0.05),
+              AnimatedContainer(
+                key: _resumeKey,
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+                padding: EdgeInsets.only(top: size.width * 0.05),
+                color: Colors.black,
+                child: Column(
+                  children: [
+                    ResumeHeader(size: size),
+                    Align(
+                        alignment: Alignment.center,
+                        child: ResumeSection(size: size))
+                  ],
+                ),
+              )
             ],
           ),
         ),
@@ -256,5 +339,102 @@ class _DesktopLayoutState extends State<DesktopLayout> {
     } else {
       return Colors.transparent;
     }
+  }
+}
+
+class ResumeSection extends StatelessWidget {
+  const ResumeSection({
+    super.key,
+    required this.size,
+  });
+
+  final Size size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Education Column
+        Expanded(
+          child: Column(
+            children: [
+              Text(
+                'Education',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: size.width * 0.04,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 20),
+              ResumeCard(
+                img: 'assets/images/mea.png',
+                title: 'Computer Science',
+                subtitle: 'MEA Engineering College / 2021-2025',
+                description:
+                    'Studying core computer science subjects, including programming, data structures, algorithms, and software engineering.',
+              ),
+              ResumeCard(
+                img: 'assets/images/ktu.jpg',
+                title: 'Bachelor Degree',
+                subtitle:
+                    'APJ Abdul Kalam Technological University / 2021 - 2025',
+                description:
+                    'Pursuing a Bachelor\'s degree with a focus on technical skills and practical experience in engineering disciplines.',
+              ),
+              ResumeCard(
+                img: 'assets/images/DHSE.png',
+                title: 'Higher Secondary',
+                subtitle:
+                    'Directorate of Higher Secondary Education / 2019 - 2021',
+                description:
+                    'Completed higher secondary education with a focus on science subjects, including physics, chemistry, and mathematics.',
+              ),
+            ],
+          ),
+        ),
+        SizedBox(width: 40),
+
+        // Experience Column
+        Expanded(
+          child: Column(
+            children: [
+              Text(
+                'Experience',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: size.width * 0.04,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 20),
+              ResumeCard(
+                img: 'assets/images/profile_sqr.png',
+                title: 'Technical Chief',
+                subtitle: 'IEDC MEAEC / 2023 - 2025',
+                description:
+                    'Leading technical projects and initiatives, providing mentorship, and driving innovation within the IEDC community.',
+              ),
+              ResumeCard(
+                img: 'assets/images/flutter.png',
+                title: 'Flutter Workshop Mentor',
+                subtitle: 'IEEE MEAEC / 2023 - 2025',
+                description:
+                    'Conducted workshops on Flutter development, teaching students the basics and advanced concepts of building cross-platform mobile applications.',
+              ),
+              ResumeCard(
+                img: 'assets/images/ICFOSS.png',
+                title: 'Machine Learning Intern',
+                subtitle: 'ICFOSS / 2022 - 2023',
+                description:
+                    'Developed machine learning models and applied data analysis techniques using Python, contributing to various research projects at ICFOS.',
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
