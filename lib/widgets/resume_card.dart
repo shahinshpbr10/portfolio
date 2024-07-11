@@ -17,10 +17,10 @@ class ResumeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+      padding: EdgeInsets.symmetric(horizontal: size.width * 0.02),
       child: Container(
         width: size.width,
-        height: 200,
+        height: 150,
         margin: EdgeInsets.only(bottom: 20),
         padding: EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(

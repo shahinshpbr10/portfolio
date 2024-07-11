@@ -76,13 +76,17 @@ class AllProjects extends StatelessWidget {
     return Container(
       child: Center(
         child: GridView(
+          shrinkWrap: true,
           padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               mainAxisSpacing: 10,
               crossAxisSpacing: 100,
               childAspectRatio: 3 / 3),
-          children: [ProjectCard(), ProjectCard(), ProjectCard()],
+          children: [
+            ProjectCard(),
+            ProjectCard(),
+          ],
         ),
       ),
     );
