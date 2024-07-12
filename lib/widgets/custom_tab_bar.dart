@@ -76,14 +76,18 @@ class AllProjects extends StatelessWidget {
     return Container(
       child: Center(
         child: GridView(
-          shrinkWrap: true,
+          // shrinkWrap: true,
           padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+              crossAxisCount: 3,
               mainAxisSpacing: 10,
-              crossAxisSpacing: 100,
+              crossAxisSpacing: 10,
               childAspectRatio: 3 / 3),
           children: [
+            ProjectCard(),
+            ProjectCard(),
+            ProjectCard(),
+            ProjectCard(),
             ProjectCard(),
             ProjectCard(),
           ],
@@ -119,6 +123,7 @@ class _ProjectCardState extends State<ProjectCard> {
       child: Column(
         children: [
           Container(
+            width: 350,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
             ),

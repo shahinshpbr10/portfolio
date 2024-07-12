@@ -9,6 +9,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final VoidCallback? scrollToWorks;
   final VoidCallback? scrollTohome;
   final VoidCallback? scrollToResume;
+  final VoidCallback? scrollTocontact;
   final double? toolbarHeight;
 
   CustomAppBar({
@@ -18,6 +19,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
     this.scrollToResume,
     this.toolbarHeight,
     this.scrollTohome,
+    this.scrollTocontact,
   });
 
   @override
@@ -79,7 +81,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         title: 'Resume',
                         ontap: widget.scrollToResume,
                       ),
-                      NavItem(title: 'Contact'),
+                      NavItem(title: 'Contact', ontap: widget.scrollTocontact),
                       Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
