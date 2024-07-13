@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/core/common/colors.dart';
 import 'package:portfolio/core/common/styles.dart';
+import 'package:portfolio/widgets/contact_section.dart';
 import 'package:portfolio/widgets/count_container_widget.dart';
+import 'package:portfolio/widgets/custom_appbar.dart';
+import 'package:portfolio/widgets/custom_tab_bar.dart';
 import 'package:portfolio/widgets/downloadcvbutton.dart';
 import 'package:portfolio/widgets/header_text_widget.dart';
+import 'package:portfolio/widgets/my_skill_wigets.dart';
 import 'package:portfolio/widgets/myservice_widgets.dart';
 import 'package:portfolio/widgets/navbar/navitems.dart';
+import 'package:portfolio/widgets/resume_header.dart';
+import 'package:portfolio/widgets/resume_section.dart';
 import 'package:portfolio/widgets/rotating_image_continer.dart';
+import 'package:portfolio/widgets/skill_header.dart';
 import 'package:portfolio/widgets/social_widgets.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
@@ -18,16 +25,38 @@ class TabletLayout extends StatefulWidget {
   State<TabletLayout> createState() => _TabletLayoutState();
 }
 
-class _TabletLayoutState extends State<TabletLayout> {
+class _TabletLayoutState extends State<TabletLayout>
+    with TickerProviderStateMixin {
   ScrollController _scrollController = ScrollController();
+  late Animation<double> _resumeOpacityAnimation;
+  late AnimationController _resumeOpacityController;
   double _scrollPosition = 0.0;
   bool isHovered = false;
   final GlobalKey _servicesKey = GlobalKey();
+  late TabController _tabController;
+
+  final GlobalKey _worksKey = GlobalKey();
+  final GlobalKey _resumeKey = GlobalKey();
+  final GlobalKey _homeKey = GlobalKey();
+  final GlobalKey _contactkey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 4, vsync: this);
     _scrollController.addListener(_scrollListener);
+    // Initialize animation controller for resume opacity
+    _resumeOpacityController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 500),
+    );
+    _resumeOpacityAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(_resumeOpacityController);
+
+    // Start animations based on scroll position
+    _startResumeAnimation();
   }
 
   @override
@@ -43,9 +72,55 @@ class _TabletLayoutState extends State<TabletLayout> {
     });
   }
 
+  void _startResumeAnimation() {
+    // Trigger animation when resume section is in view
+    if (_isResumeInView()) {
+      _resumeOpacityController.forward();
+    } else {
+      _resumeOpacityController.reverse();
+    }
+  }
+
+  bool _isResumeInView() {
+    // Adjust threshold as needed
+    return _scrollPosition > (_resumeKey.currentContext?.size?.height ?? 0);
+  }
+
   void _scrollToServices() {
     Scrollable.ensureVisible(
       _servicesKey.currentContext!,
+      duration: Duration(seconds: 1),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _scrollToWorks() {
+    Scrollable.ensureVisible(
+      _worksKey.currentContext!,
+      duration: Duration(seconds: 1),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _scrollToHome() {
+    Scrollable.ensureVisible(
+      _homeKey.currentContext!,
+      duration: Duration(seconds: 1),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _scrollToResume() {
+    Scrollable.ensureVisible(
+      _resumeKey.currentContext!,
+      duration: Duration(seconds: 1),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _scrollToContact() {
+    Scrollable.ensureVisible(
+      _contactkey.currentContext!,
       duration: Duration(seconds: 1),
       curve: Curves.easeInOut,
     );
@@ -55,6 +130,15 @@ class _TabletLayoutState extends State<TabletLayout> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: CustomAppBar(
+        scrollTohome: _scrollToHome,
+        toolbarHeight: 80,
+        backgroundColor: AppColors.ebony,
+        scrollToWorks: _scrollToWorks,
+        scrollToResume: _scrollToResume,
+        scrollToServices: _scrollToServices,
+        scrollTocontact: _scrollToContact,
+      ),
       body: Container(
         height: double.infinity,
         width: double.infinity,
@@ -65,77 +149,6 @@ class _TabletLayoutState extends State<TabletLayout> {
             margin: EdgeInsets.symmetric(vertical: size.height * 0.04),
             child: Column(
               children: [
-                Container(
-                  margin: EdgeInsets.only(
-                      left: size.width * 0.05,
-                      right: size.width * 0.05,
-                      top: size.width * 0.01,
-                      bottom: size.width * 0.01),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Welcome',
-                        style: GoogleFonts.playball(
-                            color: Colors.white, fontSize: size.width * 0.04),
-                      ),
-                      Row(
-                        children: [
-                          NavItem(
-                            title: 'Services',
-                            ontap: _scrollToServices,
-                          ),
-                          NavItem(title: 'Works'),
-                          NavItem(title: 'Resume'),
-                          NavItem(title: 'Skills'),
-                          NavItem(title: 'Contact'),
-                          Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: isHovered
-                                    ? [AppColors.studio, AppColors.ebony]
-                                    : [AppColors.ebony, AppColors.studio],
-                              ),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: AppColors.studio),
-                            ),
-                            child: MouseRegion(
-                              onEnter: (_) {
-                                setState(() {
-                                  isHovered = true;
-                                });
-                              },
-                              onExit: (_) {
-                                setState(() {
-                                  isHovered = false;
-                                });
-                              },
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.transparent,
-                                  shadowColor: Colors.transparent,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                ),
-                                child: Text(
-                                  'Hire me!',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: size.width * 0.011,
-                                      fontFamily: 'Poppins'),
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -244,7 +257,7 @@ class _TabletLayoutState extends State<TabletLayout> {
                   key: _servicesKey,
                   duration: Duration(milliseconds: 500),
                   curve: Curves.easeInOut,
-                  color: _calculateContainerColor(size),
+                  color: _calculateContainerColor(size, 0.5),
                   padding: EdgeInsets.symmetric(vertical: size.width * 0.07),
                   child: Column(
                     children: [
@@ -279,6 +292,77 @@ class _TabletLayoutState extends State<TabletLayout> {
                     ],
                   ),
                 ),
+                Container(
+                  key: _worksKey,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: size.width,
+                        padding:
+                            EdgeInsets.symmetric(vertical: size.width * 0.05),
+                        child: Column(
+                          children: [
+                            GradientText(
+                              "My Recent Works",
+                              colors: [AppColors.studio, AppColors.paleSlate],
+                              style: TextStyle(
+                                fontSize: size.width * 0.030,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: size.height * 0.05),
+                            CustomTabBar(tabController: _tabController),
+                            SizedBox(height: size.height * 0.05),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: size.width * 0.05),
+                        height: size.height,
+                        child: CustomeTabBarView(
+                            tabController: _tabController, size: size),
+                      ),
+                      Container(
+                        color: AppColors.ebony,
+                        key: _resumeKey,
+                        padding: EdgeInsets.only(top: size.width * 0.02),
+                        child: Column(
+                          children: [
+                            ResumeHeader(size: size),
+                            Align(
+                              alignment: Alignment.center,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: size.width * 0.03),
+                                child: ResumeSection(size: size),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            SkillHeader(size: size),
+                            MySkillsWidget(),
+                            SizedBox(height: size.height * 0.1),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: size.height * 0.05),
+                      Container(
+                          key: _contactkey,
+                          child: Column(
+                            children: [
+                              SizedBox(height: size.height * 0.07),
+                              ContactSection(size: size),
+                              SizedBox(height: size.height * 0.07),
+                              SocialWidget(),
+                              SizedBox(height: size.height * 0.03),
+                            ],
+                          ))
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -297,10 +381,9 @@ class _TabletLayoutState extends State<TabletLayout> {
     return (1.0 - normalizedScroll.clamp(0.0, 1.0)) * (endOffset - startOffset);
   }
 
-  Color _calculateContainerColor(size) {
-    if (_scrollPosition > size.height * 0.5) {
-      // Change color when scroll position reaches a certain point (adjust 0.5 as needed)
-      return AppColors.ebony;
+  Color _calculateContainerColor(Size size, double threshold) {
+    if (_scrollPosition > size.height * threshold) {
+      return AppColors.ebony; // Change to desired color
     } else {
       return Colors.transparent;
     }
