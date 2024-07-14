@@ -174,11 +174,7 @@ class _MobileLayoutState extends State<MobileLayout>
                         ],
                       ),
                     ),
-                    // SizedBox(height: size.width * 0.09),
-                    Container(
-                      color: AppColors.ebony,
-                      child: MyServicesWidget(size: size),
-                    ),
+                    SizedBox(height: size.width * 0.09),
                   ],
                 ),
               ),

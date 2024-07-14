@@ -144,8 +144,10 @@ class _TabletLayoutState extends State<TabletLayout>
         width: double.infinity,
         decoration: Styles.gradientDecoration,
         child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
           controller: _scrollController,
           child: Container(
+            key: _homeKey,
             margin: EdgeInsets.symmetric(vertical: size.height * 0.04),
             child: Column(
               children: [

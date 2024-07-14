@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portfolio/core/common/colors.dart';
+import 'package:portfolio/screens/mobile/contact_page.dart';
 import 'package:portfolio/screens/mobile/mobile_service_screen.dart';
+import 'package:portfolio/screens/mobile/resume_page.dart';
+import 'package:portfolio/screens/mobile/work_page.dart';
 import 'package:portfolio/widgets/sidemenumobile/info_card.dart';
 import 'package:portfolio/widgets/sidemenumobile/side_menu_tile.dart';
 
@@ -63,6 +66,11 @@ class _SideMenuState extends State<SideMenu> {
               ontap: () {
                 setState(() {
                   activeTile = 'Works';
+                  Navigator.of(context).push(CupertinoPageRoute(
+                    builder: (context) {
+                      return WorkMobilePage();
+                    },
+                  ));
                 });
               },
             ),
@@ -74,17 +82,11 @@ class _SideMenuState extends State<SideMenu> {
               ontap: () {
                 setState(() {
                   activeTile = 'Resume';
-                });
-              },
-            ),
-            SideMenuTile(
-              size: size,
-              icon: Icons.skateboarding,
-              text: 'Skills',
-              isActive: activeTile == 'Skills',
-              ontap: () {
-                setState(() {
-                  activeTile = 'Skills';
+                  Navigator.of(context).push(CupertinoPageRoute(
+                    builder: (context) {
+                      return ResumePageMobile();
+                    },
+                  ));
                 });
               },
             ),
@@ -96,6 +98,11 @@ class _SideMenuState extends State<SideMenu> {
               ontap: () {
                 setState(() {
                   activeTile = 'Contact';
+                  Navigator.of(context).push(CupertinoPageRoute(
+                    builder: (context) {
+                      return ContactPageMobile();
+                    },
+                  ));
                 });
               },
             ),
