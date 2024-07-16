@@ -32,7 +32,7 @@ class CustomTabBar extends StatelessWidget {
               text: 'UI/UX',
             ),
             Tab(
-              text: 'Ml Models',
+              text: 'Ml ',
             ),
           ]),
     );
@@ -84,12 +84,22 @@ class AllProjects extends StatelessWidget {
               crossAxisSpacing: 10,
               childAspectRatio: 3 / 3),
           children: [
-            ProjectCard(),
-            ProjectCard(),
-            ProjectCard(),
-            ProjectCard(),
-            ProjectCard(),
-            ProjectCard(),
+            ProjectCard(
+              imgurl: 'assets/images/project_img.jpg',
+              title: "App Development",
+            ),
+            ProjectCard(
+              imgurl: 'assets/images/uiux.jpg',
+              title: "UI/UX Design",
+            ),
+            ProjectCard(
+              imgurl: 'assets/images/ml.jpeg',
+              title: "Machine Learning",
+            ),
+            // ProjectCard(),
+            // ProjectCard(),
+            // ProjectCard(),
+            // ProjectCard(),
           ],
         ),
       ),
@@ -98,7 +108,9 @@ class AllProjects extends StatelessWidget {
 }
 
 class ProjectCard extends StatefulWidget {
-  const ProjectCard({super.key});
+  const ProjectCard({super.key, required this.imgurl, required this.title});
+  final String imgurl;
+  final String title;
 
   @override
   State<ProjectCard> createState() => _ProjectCardState();
@@ -123,7 +135,6 @@ class _ProjectCardState extends State<ProjectCard> {
       child: Column(
         children: [
           Container(
-            width: 350,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
             ),
@@ -132,7 +143,7 @@ class _ProjectCardState extends State<ProjectCard> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.asset(
-                    "assets/images/project_img.jpg",
+                    widget.imgurl,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -152,7 +163,7 @@ class _ProjectCardState extends State<ProjectCard> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "App Development",
+                          widget.title,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
